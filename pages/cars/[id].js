@@ -2,8 +2,6 @@ import { useRouter } from "next/router";
 
 import Head from "next/head";
 
-import Image from "next/image";
-
 export default function Car({ car }) {
 
   const router = useRouter();
@@ -18,7 +16,7 @@ export default function Car({ car }) {
   </Head>
   
     <h1>Hello {id}</h1>
-    <Image src={car.image} alt={`Picture of a ${id}`} />
+    <img src={car.image} alt="wtf" width="300px" height="300px" />
 
   </>)
 
@@ -30,8 +28,10 @@ export default function Car({ car }) {
 export async function getStaticProps({ params }) {
 
 
-  const req = await fetch(`https://localhost:3000/${params.id}.json`);
+  const req = await fetch(`http://localhost:3000/${params.id}.json`);
   const data = await req.json();
+
+  console.log(data);
 
   return {
     props: { car: data },
@@ -44,4 +44,19 @@ export async function getStaticProps({ params }) {
 
 export async function getStaticPaths() {
 
+  const req = await fetch('http://localhost:3000/cars.json');
+  const data = await req.json();
+
+  console.log(data);
+
+  const paths = data.map(car => {
+    return { params: { id: car } }
+  })
+
+  return {
+    paths,
+    fallback: false
+
+  }
 }
+
